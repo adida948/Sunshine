@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Sunshine</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="date">Today is August 10th</string>
+    <string name="weather_stage">Cloudy</string>
+    <string name="high_temp">30</string>
+    <string name="low_temp">8</string>
+    <string name="forecast_temp">Today - Sunny - 86/63 </string>
     <string name="action_settings">Settings</string>
 </resources>
