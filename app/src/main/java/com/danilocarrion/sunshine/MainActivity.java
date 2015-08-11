@@ -9,6 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +61,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            //Once the rootView for the fragment has been created, it's time to populate the listView with some dummy data.
+            // Create some dummy data for the ListView.  Here's a sample weekly forecast
+            String[] forecastArray = {
+                    "Mon - Sunny - 88/63",
+                    "Tue - Foggy - 70/46",
+                    "Wed - Cloudy- 72/63",
+                    "Thu - Rainy - 64/51",
+                    "Fri - Foggy - 70/46",
+                    "Sat - Sunny - 76/68",
+                    "Sun - Sunny - 76/68"
+            };
+            List<String> weekForecast = new ArrayList<>(Arrays.asList(forecastArray));
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
