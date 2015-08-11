@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,57 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment">
 
-    <TextView
-        android:layout_marginTop="20dp"
-        android:id="@+id/today_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date"
-        android:textSize="19sp"/>
+    <ListView
+        android:id="@+id/listview_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
-    <TextView
-        android:id="@+id/high_temp"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/high_temp"
-        android:layout_below="@+id/today_date"
-        android:textSize="40sp"
-        />
-
-
-    <TextView
-        android:id="@+id/low_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/low_temp"
-        android:textSize="30sp"
-        android:layout_below="@+id/high_temp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-
-    <ImageView
-        android:id="@+id/weather_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:src="@mipmap/ic_launcher"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
-
-
-    <TextView
-        android:id="@+id/stage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/weather_stage"
-        android:layout_marginRight="30dp"
-        android:layout_below="@+id/weather_image"
-        android:layout_alignParentRight="true"
-        android:textSize="14sp"/>
-
-
-
-</RelativeLayout>
+</FrameLayout>
