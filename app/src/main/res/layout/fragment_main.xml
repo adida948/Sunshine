@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:text="@string/low_temp"
         android:textSize="30sp"
-        android:layout_below="@+id/stage"
+        android:layout_below="@+id/high_temp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
