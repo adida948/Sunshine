@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
 
         ArrayAdapter<String> mForecastAdapter;
-        ListView mForecastListView;
-
 
         public PlaceholderFragment() {
         }
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             //Once the rootView for the fragment has been created, it's time to populate the listView with some dummy data.
             // Create some dummy data for the ListView.  Here's a sample weekly forecast
@@ -92,7 +91,11 @@ public class MainActivity extends AppCompatActivity {
                     R.id.list_item_forecast_textview, // The ID of the textview to populate.
                     weekForecast);
 
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            // Get a reference to the ListView, and attach this adapter to it.
+            ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+            forecastListView.setAdapter(mForecastAdapter);
+
             return rootView;
         }
     }
