@@ -8,9 +8,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        ArrayAdapter<String> mForecastAdapter;
+
         public PlaceholderFragment() {
         }
 
@@ -58,6 +67,35 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            //Once the rootView for the fragment has been created, it's time to populate the listView with some dummy data.
+            // Create some dummy data for the ListView.  Here's a sample weekly forecast
+            String[] forecastArray = {
+                    "Mon - Sunny - 88/63",
+                    "Tue - Foggy - 70/46",
+                    "Wed - Cloudy- 72/63",
+                    "Thu - Rainy - 64/51",
+                    "Fri - Foggy - 70/46",
+                    "Sat - Sunny - 76/68",
+                    "Sun - Sunny - 76/68"
+            };
+            //Create a list
+            List<String> weekForecast = new ArrayList<>(Arrays.asList(forecastArray));
+
+            // Now that we have some dummy forecast data, create an ArrayAdapter.
+            // The ArrayAdapter will take data from a source (like our dummy forecast) and
+            // use it to populate the ListView it's attached to.
+            mForecastAdapter = new ArrayAdapter<String>(
+                    getActivity(), // The current context (this activity)
+                    R.layout.list_item_forecast, // The name of the layout ID.
+                    R.id.list_item_forecast_textview, // The ID of the textview to populate.
+                    weekForecast);
+
+
+            // Get a reference to the ListView, and attach this adapter to it.
+            ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+            forecastListView.setAdapter(mForecastAdapter);
+
             return rootView;
         }
     }
