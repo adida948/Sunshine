@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     weekForecast);
 
 
-            // Get a reference to the ListView, and attach this adapter to it.
+            //Get a reference to the ListView, and attach this adapter to it.
             ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
             forecastListView.setAdapter(mForecastAdapter);
 
