@@ -56,6 +56,8 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+            FetchWeatherTask weatherTask = new FetchWeatherTask();
+            weatherTask.execute();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -89,12 +91,12 @@ public class ForecastFragment extends Fragment {
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
                 weekForecast);
 
-
         // Get a reference to the ListView, and attach this adapter to it.
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastListView.setAdapter(mForecastAdapter);
 
-        setHasOptionsMenu(true);
+
+        new FetchWeatherTask().execute();
 
         return rootView;
     }
