@@ -1,9 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+         Used in Action Bar, and in AndroidManifest to tell the device the name of this app.
+         It's to keep this short, so your launcher icon isn't displayed with "The greatest Wea"
+         or something similar.
+    -->
     <string name="app_name">Sunshine</string>
-    <string name="date">Today is August 10th</string>
-    <string name="weather_stage">Cloudy</string>
-    <string name="high_temp">30</string>
-    <string name="low_temp">8</string>
-    <string name="forecast_temp">Today - Sunny - 86/63 </string>
+    <!--
+         By convention, "action" denotes that this String will be used as the label for an Action,
+         typically from the action bar.  The ActionBar is limited real estate, so shorter is better.
+    -->
     <string name="action_settings">Settings</string>
+    <!-- Menu label to fetch updated weather info from the server -->
+    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="hello_world">Hello world!</string>
 </resources>
