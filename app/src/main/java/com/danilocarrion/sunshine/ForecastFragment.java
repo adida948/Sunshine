@@ -95,9 +95,6 @@ public class ForecastFragment extends Fragment {
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastListView.setAdapter(mForecastAdapter);
 
-
-        new FetchWeatherTask().execute();
-
         return rootView;
     }
 
@@ -162,8 +159,10 @@ public class ForecastFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-
                 forecastJsonStr = buffer.toString();
+
+                Log.v(LOG_TAG, "Forecast Json String: " + forecastJsonStr);
+
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
@@ -182,11 +181,7 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
-
-
             return null;
-
         }
-
     }
 }
