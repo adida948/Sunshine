@@ -5,6 +5,7 @@ package com.danilocarrion.sunshine;
  * A placeholder fragment containing a simple view.
  */
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -124,8 +125,12 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String weatherInformation = mForecastAdapter.getItem(position);
-                Toast.makeText(getActivity(),weatherInformation, Toast.LENGTH_LONG).show();
+                String forecast = mForecastAdapter.getItem(position);
+
+                //Create intent to take you to Detail Activity
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+
+                Toast.makeText(getActivity(),forecast, Toast.LENGTH_LONG).show();
             }
         });
         return rootView;
