@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,9 +127,10 @@ public class ForecastFragment extends Fragment {
                 String forecast = mForecastAdapter.getItem(position);
 
                 //Create intent to take you to Detail Activity
-                Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(detailIntent);
 
-                Toast.makeText(getActivity(),forecast, Toast.LENGTH_LONG).show();
             }
         });
         return rootView;
