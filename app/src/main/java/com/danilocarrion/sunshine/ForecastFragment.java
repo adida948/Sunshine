@@ -36,8 +36,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
@@ -68,13 +66,7 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            //Sent the zipcode to lookup 7 day forecast. Zipcode is pulled from SharedPreferences
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String location = sharedPref.getString(getString(R.string.pref_location_key),
-                    getString(R.string.pref_location_default));
-             weatherTask.execute("10031");
-
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -85,28 +77,13 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        //Once the rootView for the fragment has been created, it's time to populate the listView with some dummy data.
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        String[] forecastArray = {
-                "Mon - Sunny - 88/63",
-                "Tue - Foggy - 70/46",
-                "Wed - Cloudy- 72/63",
-                "Thu - Rainy - 64/51",
-                "Fri - Foggy - 70/46",
-                "Sat - Sunny - 76/68",
-                "Sun - Sunny - 76/68"
-        };
-        //Create a list
-        List<String> weekForecast = new ArrayList<>(Arrays.asList(forecastArray));
-
-        // Now that we have some dummy forecast data, create an ArrayAdapter.
-        // The ArrayAdapter will take data from a source (like our dummy forecast) and
+        // The ArrayAdapter will take data from a source (the forecastAPI) and
         // use it to populate the ListView it's attached to.
         mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(), // The current context (this activity)
                 R.layout.list_item_forecast, // The name of the layout ID.
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                weekForecast);
+                new ArrayList<String>());
 
         // Get a reference to the ListView, and attach this adapter to it.
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -140,6 +117,29 @@ public class ForecastFragment extends Fragment {
         });
         return rootView;
     }
+
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        //Sent the zipcode to lookup 7 day forecast. Zipcode is pulled from SharedPreferences
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = sharedPref.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(location);
+    }
+
+    /**
+     * Called when the Fragment is visible to the user.  This is generally
+     * tied to  Activity.onStart} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        // We override onStart so that the refresh happens
+        // whenever the fragment starts, this will cause the weather data to appear
+        updateWeather();
+    }
+
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
