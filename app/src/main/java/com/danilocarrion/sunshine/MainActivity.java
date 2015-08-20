@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //Click on the main Activity settings and send user to the SettingsActivity
-            startActivity(new Intent(getApplicationContext(),SettingsActivity.class ));
+            startActivity(new Intent(this,SettingsActivity.class ));
             return true;
         }
 
