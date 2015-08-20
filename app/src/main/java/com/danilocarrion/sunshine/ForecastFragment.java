@@ -6,9 +6,11 @@ package com.danilocarrion.sunshine;
  */
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -67,7 +69,10 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchWeatherTask weatherTask = new FetchWeatherTask();
-            //Sent the zipcode to lookup 7 day forecast
+            //Sent the zipcode to lookup 7 day forecast. Zipcode is pulled from SharedPreferences
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = sharedPref.getString(getString(R.string.pref_location_key),
+                    getString(R.string.pref_location_default));
              weatherTask.execute("10031");
 
             return true;
