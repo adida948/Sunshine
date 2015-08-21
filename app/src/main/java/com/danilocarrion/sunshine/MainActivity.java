@@ -1,14 +1,19 @@
 package com.danilocarrion.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,43 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+
+        if (id == R.id.action_map) {
+            openPreferredLocationMap();
+
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openPreferredLocationMap() {
+        //Get preferred location from SharedPreferences
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = sharedPrefs.getString(
+                getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+
+        // Create a Uri from an intent string. Use the result to create an Intent.
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        //intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        Uri geolocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q", location)
+                .build();
+
+        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        mapIntent.setData(geolocation);
+
+        // Make the Intent explicit by setting the Google Maps package
+        // mapIntent.setPackage("com .google.android.apps.maps");
+
+        // Attempt to start an activity that can handle the Intent
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed");
+        }
     }
 
 
