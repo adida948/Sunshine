@@ -15,13 +15,15 @@
     <string name="action_settings">Settings</string>
 
     <!-- Menu label to fetch updated weather info from the server -->
-    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="action_refresh">Refresh</string>
     <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Menu label to get preferred location from map -->
-    <string name="action_map" translatable="false">Preferred Location</string>
+    <string name="action_map">Preferred Location</string>
 
+    <!-- Share Action provider  label to share temperature  -->
+    <string name="action_share">Share</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
     <string name="pref_location_label">Location</string>
@@ -44,5 +46,7 @@
     <string name="pref_units_metric" translatable="false">metric</string>
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
+
+
 
 </resources>
