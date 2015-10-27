@@ -35,8 +35,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.danilocarrion.sunshine.MainActivity" />
         </activity>
+        
+        <provider
+            android:authorities="com.danilocarrion.sunshine"
+            android:name=".data.WeatherProvider"/>
     </application>
-
-
 
 </manifest>
