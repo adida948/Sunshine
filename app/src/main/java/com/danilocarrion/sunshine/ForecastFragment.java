@@ -299,6 +299,7 @@ public class ForecastFragment extends Fragment {
                 final String FORMAT_PARAM = "mode";
                 final String UNITS_PARAM = "units";
                 final String DAYS_PARAM = "cnt";
+                final String APPID_PARAM = "APPID";
 
                 //Construct the URL to fetch forecast data.
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL)
@@ -307,6 +308,7 @@ public class ForecastFragment extends Fragment {
                         .appendQueryParameter(FORMAT_PARAM, "json")
                         .appendQueryParameter(UNITS_PARAM, units)
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(7))
+                        .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
                         .build();
 
                 // Construct the URL for the OpenWeatherMap query
