@@ -5,10 +5,9 @@ package com.danilocarrion.sunshine;
  * A placeholder fragment containing a simple view.
  */
 
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,18 +15,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import com.danilocarrion.sunshine.data.WeatherContract;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
 public class ForecastFragment extends Fragment {
 
-    private ArrayAdapter<String> mForecastAdapter;
+    // Making mForecastAdapter to be an instance of the ForecastAdapter instead of ArrayAdapter to use our cursorLoader
+    private ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -58,56 +56,31 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        String locationSetting = Utility.getPreferredLocation(getActivity());
 
-        // The ArrayAdapter will take data from a source (the forecastAPI) and
-        // use it to populate the ListView it's attached to.
-        mForecastAdapter = new ArrayAdapter<String>(
-                getActivity(), // The current context (this activity)
-                R.layout.list_item_forecast, // The name of the layout ID.
-                R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                new ArrayList<String>());
+        // Sort order: Ascending by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + "ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
+        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri, null, null, null, sortOrder);
+
+        //The CursorAdapter will take data from our cursor and populate the listView. However, we cannot use the FLAG_AUTO_REQUERY since it is deprecated, so we will end up
+        // with an empty list the first time we run.
+        mForecastAdapter = new ForecastAdapter(getActivity(), cur, 0);
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastListView.setAdapter(mForecastAdapter);
 
-        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * Callback method to be invoked when an item in this AdapterView has
-             * been clicked.
-             * <p/>
-             * Implementers can call getItemAtPosition(position) if they need
-             * to access the data associated with the selected item.
-             *
-             * @param parent   The AdapterView where the click happened.
-             * @param view     The view within the AdapterView that was clicked (this
-             *                 will be a view provided by the adapter)
-             * @param position The position of the view in the adapter.
-             * @param id       The row id of the item that was clicked.
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String forecast = mForecastAdapter.getItem(position);
-
-                //Create intent to take you to Detail Activity
-                Intent detailIntent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, forecast);
-                startActivity(detailIntent);
-
-            }
-        });
         return rootView;
     }
 
     private void updateWeather() {
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(),mForecastAdapter);
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         //Sent the zipcode to lookup 7 day forecast. Zipcode is pulled from SharedPreferences
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location = sharedPref.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        String location = Utility.getPreferredLocation(getActivity());
 
         weatherTask.execute(location);
     }
