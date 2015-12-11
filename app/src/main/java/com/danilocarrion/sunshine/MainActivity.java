@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_map) {
             openPreferredLocationMap();
-
+           return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void openPreferredLocationMap() {
+    private void openPreferredLocationMap() {
         //Get preferred location from SharedPreferences
         String location = Utility.getPreferredLocation(this);
 
@@ -64,13 +64,13 @@ public class MainActivity extends AppCompatActivity {
         // Using the URI scheme for showing a location found on a map.  This super-handy
         //intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
-        Uri geolocation = Uri.parse("geo:0,0?").buildUpon()
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
                 .appendQueryParameter("q", location)
                 .build();
 
         // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
         Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-        mapIntent.setData(geolocation);
+        mapIntent.setData(geoLocation);
 
         // Make the Intent explicit by setting the Google Maps package
         // mapIntent.setPackage("com .google.android.apps.maps");

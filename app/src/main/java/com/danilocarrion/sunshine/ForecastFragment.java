@@ -60,7 +60,7 @@ public class ForecastFragment extends Fragment {
         String locationSetting = Utility.getPreferredLocation(getActivity());
 
         // Sort order: Ascending by date.
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + "ASC";
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
         Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri, null, null, null, sortOrder);
 
