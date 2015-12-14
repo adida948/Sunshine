@@ -38,6 +38,8 @@ public class ForecastAdapter extends CursorAdapter {
         int idx_min_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP);
         int idx_date = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
         int idx_short_desc = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+        //City Testing
+
 
         String highAndLow = formatHighLows(
                 cursor.getDouble(idx_max_temp),
