@@ -1,8 +1,12 @@
 package com.danilocarrion.sunshine;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ShareActionProvider;
@@ -14,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.danilocarrion.sunshine.data.WeatherContract;
+import com.danilocarrion.sunshine.data.WeatherContract.WeatherEntry;
 
 public class DetailActivity extends ActionBarActivity {
 
@@ -55,12 +62,32 @@ public class DetailActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+    public static class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+
         private static final String FORECAST_SHARE_HASHTAG = "#SunshineApp";
 
-        private String mForecastStr;
+        private ShareActionProvider mShareActionProvider;
+        private String mForecast;
+
+        private static final int DETAIL_LOADER = 0;
+
+        private static final String[] FORECAST_COLUMNS = {
+                WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
+                WeatherContract.WeatherEntry.COLUMN_DATE,
+                WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
+                WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+                WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+        };
+
+        // these constants correspond to the projection defined above, and must change if the
+        // projection changes
+        private static final int COL_WEATHER_ID = 0;
+        private static final int COL_WEATHER_DATE = 1;
+        private static final int COL_WEATHER_DESC = 2;
+        private static final int COL_WEATHER_MAX_TEMP = 3;
+        private static final int COL_WEATHER_MIN_TEMP = 4;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -71,28 +98,15 @@ public class DetailActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+            return inflater.inflate(R.layout.fragment_detail, container, false);
 
-            // The detail Activity called via intent.  Inspect the intent for forecast data.
-            Intent intent = getActivity().getIntent();
-
-            if (intent != null ) {
-                mForecastStr = intent.getDataString();
-            }
-
-            if(null != mForecastStr) {
-                    ((TextView) rootView.findViewById(R.id.detail_text)).setText(mForecastStr);
-            }
-
-
-            return rootView;
         }
 
         private Intent createShareForecastIntent() {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, mForecastStr + FORECAST_SHARE_HASHTAG);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + FORECAST_SHARE_HASHTAG);
 
             return shareIntent;
         }
@@ -106,16 +120,89 @@ public class DetailActivity extends ActionBarActivity {
             MenuItem menuItem = menu.findItem(R.id.action_share);
 
             // Get the provider and hold onto it to set/change the share intent.
-            ShareActionProvider mShareActionProvider =
-                    (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
             // Attach an intent to this ShareActionProvider.  You can update this at any time,
             // like when the user selects a new piece of data they might like to share.
-            if (mShareActionProvider != null) {
+            if (mForecast != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
-            } else {
-                Log.d(LOG_TAG, "Share Action Provider is null?");
             }
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+            super.onActivityCreated(savedInstanceState);
+        }
+
+
+        /**
+         * Instantiate and return a new Loader for the given ID.
+         *
+         * @param id   The ID whose loader is to be created.
+         * @param args Any arguments supplied by the caller.
+         * @return Return a new Loader instance that is ready to start loading.
+         */
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Log.v(LOG_TAG, "In OnCreateLoader");
+            Intent intent = getActivity().getIntent();
+            if (intent == null) {
+                return null;
+            }
+
+            //Now Create and return a cursloader that will take care of creating a cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    intent.getData(),
+                    FORECAST_COLUMNS,
+                    null,
+                    null,
+                    null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            Log.v(LOG_TAG, "In onLoadFinished");
+            if (!data.moveToFirst()) {
+                return;
+            }
+
+            String dateString = Utility.formatDate(
+                    data.getLong(COL_WEATHER_DATE));
+
+            String weatherDescription =
+                    data.getString(COL_WEATHER_DESC);
+
+            boolean isMetric = Utility.isMetric(getActivity());
+
+            String high = Utility.formatTemperature(
+                    data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+
+            String low = Utility.formatTemperature(
+                    data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+
+            mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
+
+            TextView detailView = (TextView) getView().findViewById(R.id.detail_text);
+            detailView.setText(mForecast);
+
+            //If onCraeteOptionsMenu has already happened, we need to update the share intent
+            if(mShareActionProvider !=null ) {
+                mShareActionProvider.setShareIntent(createShareForecastIntent());
+            }
+        }
+
+        /**
+         * Called when a previously created loader is being reset, and thus
+         * making its data unavailable.  The application should at this point
+         * remove any references it has to the Loader's data.
+         *
+         * @param loader The Loader that is being reset.
+         */
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
         }
     }
 }
