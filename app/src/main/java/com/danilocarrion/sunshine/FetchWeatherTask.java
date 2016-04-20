@@ -79,7 +79,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
             locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
 
-            // Finally, insert location data into the database.
+            // Finally, insert location data into the [content provider] database.
             Uri insertedUri = mContext.getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI,locationValues);
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
             locationId = ContentUris.parseId(insertedUri);

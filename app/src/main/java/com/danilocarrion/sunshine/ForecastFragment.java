@@ -96,7 +96,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //The Cursor Adapter will take data from our cursor and populate the LisView. Iniiall, the cursor is empty.
+        //The Cursor Adapter will take data from our cursor and populate the LisView. Initially, the cursor is empty.
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -129,8 +129,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         //This initializes background query(loader), which calls the method onCreateCursor
-        getLoaderManager().initLoader((FORECAST_LOADER), null, this);
+        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    // since we read the location when we create the loader, all we need to do is restart things
+    public void onLocationChanged(){
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+
     }
 
     private void updateWeather() {
@@ -139,20 +146,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         String location = Utility.getPreferredLocation(getActivity());
 
         weatherTask.execute(location);
+
     }
 
-    /**
-     * Called when the Fragment is visible to the user.  This is generally
-     * tied to  Activity.onStart} of the containing
-     * Activity's lifecycle.
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        // We override onStart so that the refresh happens
-        // whenever the fragment starts, this will cause the weather data to appear
-        updateWeather();
-    }
 
 
     /**
@@ -234,5 +230,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
         mForecastAdapter.swapCursor(null);
+
     }
 }
